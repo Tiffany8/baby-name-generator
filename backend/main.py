@@ -88,7 +88,7 @@ def index():
 def startup_db_client():
     try:
         app.mongodb_client = motor.motor_asyncio.AsyncIOMotorClient(
-            os.getenv("MONGODB_URL")
+            os.getenv("MONGO_URL")
         )
         app.database = app.mongodb_client.app_database
         print("Connected to the MongoDB database!")
