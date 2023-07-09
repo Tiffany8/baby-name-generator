@@ -5,12 +5,11 @@ import { useState } from "react";
 import { Footnote as TFootnote, NameResults } from "../types";
 import AppDescription from "./Description";
 import Footnote from "./Footnote";
-import ParentForm from "./Form";
+import ParentDataForm from "./ParentDataForm";
 import ResultsCard from "./ResultsCard";
 
 const AppLayout: React.FC = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [footnote, setFootnote] = useState<TFootnote | null>(null);
   const [nameResults, setNameResults] = useState<NameResults | null>(null);
 
@@ -41,19 +40,14 @@ const AppLayout: React.FC = (): JSX.Element => {
           paddingX={4}
         >
           <Grid xs={12} sm={8}>
-            <ParentForm
+            <ParentDataForm
               isLoading={isLoading}
               setIsLoading={setIsLoading}
               setNameResults={setNameResults}
-              setError={setError}
             />
           </Grid>
           <Grid container xs={12} sm={4}>
-            <ResultsCard
-              nameResults={nameResults}
-              isLoading={isLoading}
-              error={error}
-            />
+            <ResultsCard nameResults={nameResults} isLoading={isLoading} />
           </Grid>
         </Grid>
         {footnote && (

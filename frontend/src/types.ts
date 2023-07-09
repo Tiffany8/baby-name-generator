@@ -74,6 +74,7 @@ export const NameSchema = yup.object({
 });
 
 export const NameResultsSchema = yup.object({
+  id: yup.string().required(),
   preference_summary: yup.string().required(),
   names: yup.array().of(NameSchema).required(),
 });
@@ -93,4 +94,10 @@ export const APIErrorSchema = yup.object({
 
 export type APIError = yup.InferType<typeof APIErrorSchema>;
 
-export const isAPIError = (obj: any): obj is APIError => "detail" in obj;
+export const isAPIError = (obj: any): obj is APIError =>
+  "detail" in obj && typeof obj.detail === "string";
+
+export const EmailResultsRequestSchema = yup.object({
+  email_address: yup.string().email().required(),
+  results_id: yup.string().required(),
+});

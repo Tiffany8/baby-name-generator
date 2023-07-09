@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Card,
   CardContent,
@@ -9,29 +8,29 @@ import {
 } from "@mui/material";
 
 import { NameResults } from "../types";
+import SendEmailFormDialog from "./SendEmailFormDialog";
 
 export interface ResultsCardProps {
   nameResults: NameResults | null;
   isLoading: boolean;
-  error: string | null;
 }
 
 const ResultsCard: React.FC<ResultsCardProps> = ({
   nameResults,
   isLoading,
-  error,
 }): JSX.Element => (
-  <Card sx={{ marginY: 4, width: "100%" }}>
+  <Card sx={{ marginY: 4, width: "100%" }} color="primary">
     {nameResults ? (
       <>
         <CardHeader
           component="div"
-          subheader={nameResults.preference_summary}
-          sx={{
-            backgroundColor: "secondary.50",
-          }}
+          action={<SendEmailFormDialog nameResultsId={nameResults.id} />}
+          sx={{ fontSize: "1.5rem", backgroundColor: "primary.50" }}
         ></CardHeader>
         <CardContent>
+          <Typography variant="body1" color="text.secondary" gutterBottom>
+            {nameResults.preference_summary}
+          </Typography>
           {nameResults.names.map((nameObject, i) => (
             <Box key={i} sx={{ margin: 2 }}>
               <Typography variant="body1" component="div">
@@ -64,8 +63,6 @@ const ResultsCard: React.FC<ResultsCardProps> = ({
           <CircularProgress size={100} />
         </Box>
       </Box>
-    ) : error ? (
-      <Alert severity="error">{error}</Alert>
     ) : (
       <Box
         sx={{

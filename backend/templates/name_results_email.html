@@ -1,0 +1,92 @@
+<!-- email template source: https://github.com/seanpowell/Email-Boilerplate  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Your Baby Name Results</title>
+	<style type="text/css">
+		body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0;}
+		#backgroundTable {margin:0; padding:0; width:100% !important; line-height: 100% !important;}
+		p {margin: 1em 0;}
+		h1, h2, h3, h4, h5, h6 {color: black !important;}
+		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {color: teal !important;}
+		h1 a:active, h2 a:active,  h3 a:active, h4 a:active, h5 a:active, h6 a:active {
+			color: red !important;
+		 }
+		h1 a:visited, h2 a:visited,  h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited {
+			color: purple !important;
+		}
+		a {color: teal;}
+		@media only screen and (max-device-width: 480px) {
+			a[href^="tel"], a[href^="sms"] {
+						text-decoration: none;
+						color: black; /* or whatever your want */
+						pointer-events: none;
+						cursor: default;
+					}
+			.website a[href^="tel"], .website a[href^="sms"] {
+						text-decoration: default;
+						color: teal !important; /* or whatever your want */
+						pointer-events: auto;
+						cursor: default;
+					}
+		}
+		@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+			a[href^="tel"], a[href^="sms"] {
+						text-decoration: none;
+						color: blue;
+						pointer-events: none;
+						cursor: default;
+					}
+			.website a[href^="tel"], .website a[href^="sms"] {
+						text-decoration: default;
+						color: teal !important;
+						pointer-events: auto;
+						cursor: default;
+					}
+		}
+		@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+			/* Put your iPhone 4g styles in here */
+		}
+		@media only screen and (-webkit-device-pixel-ratio:.75){
+			/* Put CSS for low density (ldpi) Android layouts in here */
+		}
+		@media only screen and (-webkit-device-pixel-ratio:1){
+			/* Put CSS for medium density (mdpi) Android layouts in here */
+		}
+		@media only screen and (-webkit-device-pixel-ratio:1.5){
+			/* Put CSS for high density (hdpi) Android layouts in here */
+		}
+	</style>
+	<!--[if IEMobile 7]>
+	<style type="text/css">
+		/* Targeting Windows Mobile */
+	</style>
+	<![endif]-->
+	<!--[if gte mso 9]>
+	<style>
+		/* Target Outlook 2007 and 2010 */
+	</style>
+	<![endif]-->
+</head>
+<body>
+	<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="width: 600px; border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box; min-width: 100% !important;" width="100%">
+  <tr>
+    <td align="center" style="font-family: sans-serif; font-size: 14px; vertical-align: top; width: 100%; padding: 100px;" valign="top">
+      <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;">
+        {% for name_result in names %}
+        <tr>
+          <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; border-radius: 5px; padding-bottom: 24px;" valign="top">
+            <h2 style="font-size: 1.5em; font-weight: bold; margin: 0; padding-bottom: 4px;"> {{name_result.name}}</h2>
+            <p style="font-size: 1em; margin: 0;"> {{name_result.reasoning}}</p></td>
+        </tr>
+        {% endfor %}
+      </table>
+    </td>
+  </tr>
+</table>
+<a href="{{ app_url }}" target ="_blank" title="Baby Name Generator" style="padding: 30px; color: teal; text-decoration: none; font-family: sans-serif; font-size: 14px;">Baby Name Generator</a>
+
+</body>
+</html>

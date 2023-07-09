@@ -21,19 +21,19 @@ import {
   Value,
   isAPIError,
 } from "../types";
+import { SnackbarSeverity, useSnackbar } from "../hooks/useSnackbar";
 
-export interface ParentFormProps {
+export interface ParentDataFormProps {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setNameResults: React.Dispatch<React.SetStateAction<NameResults | null>>;
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
 }
-const ParentForm: React.FC<ParentFormProps> = ({
+const ParentDataForm: React.FC<ParentDataFormProps> = ({
   isLoading,
   setIsLoading,
   setNameResults,
-  setError,
 }): JSX.Element => {
+  const showSnackbar = useSnackbar();
   const formik = useFormik({
     initialValues: {
       parent1_name: "",
@@ -62,18 +62,18 @@ const ParentForm: React.FC<ParentFormProps> = ({
     setIsLoading(true);
     try {
       const response: AxiosResponse = await axios.post(
-        `${import.meta.env.VITE_API_ENDPOINT}/generate-names`,
+        `${import.meta.env.VITE_API_ENDPOINT}/names`,
         formik.values
       );
-      console.log(response);
-      const results = await NameResultsSchema.validate(
-        JSON.parse(response.data)
-      );
+      const results = await NameResultsSchema.validate(response.data);
       setNameResults(results);
       setIsLoading(false);
     } catch (error: any) {
-      isAPIError(error) ? setError(error.detail) : setError(error);
+      const errorMsg = isAPIError(error)
+        ? error.detail
+        : "Unexpected error. Please try again later.";
       setIsLoading(false);
+      showSnackbar(errorMsg, SnackbarSeverity.ERROR);
     }
   };
 
@@ -302,7 +302,12 @@ const ParentForm: React.FC<ParentFormProps> = ({
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button variant="outlined" type="submit" disabled={isLoading}>
+        <Button
+          variant="outlined"
+          color="primary"
+          type="submit"
+          disabled={isLoading}
+        >
           Generate
         </Button>
       </Grid>
@@ -310,4 +315,4 @@ const ParentForm: React.FC<ParentFormProps> = ({
   );
 };
 
-export default ParentForm;
+export default ParentDataForm;
