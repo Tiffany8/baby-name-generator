@@ -1,8 +1,8 @@
 import logging
-from database import create_name_results
-from models import ParentData
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from starlette.responses import JSONResponse
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request, status
+from fastapi.security import APIKeyHeader
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo.errors import (
     ConnectionFailure,
@@ -10,33 +10,41 @@ from pymongo.errors import (
     ServerSelectionTimeoutError,
 )
 import motor.motor_asyncio
-import openai
 import os
+import openai
 
-from openai_helpers import create_prompt
 from email_helpers import send_email, EmailNameResultsRequest
+from database import create_name_results
+from models import ParentData
+from openai_helpers import create_prompt
 
 load_dotenv()
 
+API_KEY_NAME = "X-API-Key"
 MODEL_NAME = os.getenv("GPT_MODEL_NAME")
-API_KEY = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-openai.api_key = API_KEY
 app = FastAPI()
-
-origins = [os.getenv("REACT_APP_URL")]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[os.getenv("REACT_APP_URL")],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+
+
+async def check_api_key(request: Request):
+    if request.headers.get("x-api-key") != os.getenv("API_KEY"):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API Key"
+        )
+
 
 @app.post("/names")
-async def generate_names(data: ParentData):
+async def generate_names(data: ParentData, api_key: str = Depends(check_api_key)):
     content = create_prompt(data)
     try:
         response = await openai.ChatCompletion.acreate(
@@ -44,6 +52,7 @@ async def generate_names(data: ParentData):
             messages=[{"role": "user", "content": content}],
             temperature=1,
         )
+        print(response["choices"][0]["message"]["content"])
         results = await create_name_results(
             client=app.database,
             name_results=response["choices"][0]["message"]["content"],
@@ -52,26 +61,28 @@ async def generate_names(data: ParentData):
     except openai.error.RateLimitError as error:
         logging.error(error)
         raise HTTPException(
-            status_code=429,
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="OpenAI API rate limit exceeded. Please try again later.",
         )
     except openai.error.APIError as error:
         logging.error(error)
         raise HTTPException(
-            status_code=500,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal Server Error. Please try again later.",
         )
     except Exception as error:
         logging.error(error)
         raise HTTPException(
-            status_code=500,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal Server Error. Please try again later.",
         )
 
 
 @app.post("/email-results")
 async def email_results(
-    background_task: BackgroundTasks, email_results_request: EmailNameResultsRequest
+    background_task: BackgroundTasks,
+    email_results_request: EmailNameResultsRequest,
+    api_key: str = Depends(check_api_key),
 ):
     background_task.add_task(
         send_email, app.database, results_request=email_results_request
@@ -80,7 +91,7 @@ async def email_results(
 
 
 @app.get("/")
-def index():
+def index(api_key: str = Depends(check_api_key)):
     return {"status": "ok"}
 
 
@@ -99,7 +110,8 @@ def startup_db_client():
     ) as error:
         logging.error("Configuration Error:", error)
         raise HTTPException(
-            status_code=500, detail="Internal Server Error. Please try again later."
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error. Please try again later.",
         )
     except Exception as e:
         # fyi - raise with no argument preserves original traceback

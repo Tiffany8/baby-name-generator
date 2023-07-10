@@ -28,10 +28,18 @@ const SendEmailFormDialog: React.FC<SendEmailFormDialogProps> = ({
 
   const emailResults: () => Promise<void> = async (): Promise<void> => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_ENDPOINT}/email-results`, {
-        email_address: emailAddress,
-        results_id: nameResultsId,
-      });
+      await axios.post(
+        `${import.meta.env.VITE_API_ENDPOINT}/email-results`,
+        {
+          email_address: emailAddress,
+          results_id: nameResultsId,
+        },
+        {
+          headers: {
+            "X-API-Key": import.meta.env.VITE_API_KEY,
+          },
+        }
+      );
 
       showSnackbar("Email on its way!", SnackbarSeverity.INFO);
     } catch (error) {
@@ -58,7 +66,7 @@ const SendEmailFormDialog: React.FC<SendEmailFormDialogProps> = ({
       <Dialog open={isOpen} onClose={handleClose}>
         <DialogContent>
           <DialogTitle>
-            Share your names with yourself and loved ones.
+            Share your names with a loved one or send to yourself.
           </DialogTitle>
           <TextField
             fullWidth

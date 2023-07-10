@@ -10,7 +10,6 @@ async def create_name_results(client, name_results: str) -> dict:
         {"_id": name_result.inserted_id}
     )
     result = name_result_helper(new_name_result)
-    print(type(result), result)
     return result
 
 

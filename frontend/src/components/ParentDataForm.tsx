@@ -63,7 +63,12 @@ const ParentDataForm: React.FC<ParentDataFormProps> = ({
     try {
       const response: AxiosResponse = await axios.post(
         `${import.meta.env.VITE_API_ENDPOINT}/names`,
-        formik.values
+        formik.values,
+        {
+          headers: {
+            "X-API-Key": import.meta.env.VITE_API_KEY,
+          },
+        }
       );
       const results = await NameResultsSchema.validate(response.data);
       setNameResults(results);
