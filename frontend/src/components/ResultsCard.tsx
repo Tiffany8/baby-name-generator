@@ -1,11 +1,19 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
   CircularProgress,
   Typography,
 } from "@mui/material";
+import {
+  SignUpButton,
+  SignInButton,
+  SignOutButton,
+  SignedOut,
+  SignedIn,
+} from "@clerk/clerk-react";
 
 import { NameResults } from "../types";
 import SendEmailFormDialog from "./SendEmailFormDialog";
@@ -24,7 +32,11 @@ const ResultsCard: React.FC<ResultsCardProps> = ({
       <>
         <CardHeader
           component="div"
-          action={<SendEmailFormDialog nameResultsId={nameResults.id} />}
+          action={
+            <SignedIn>
+              <SendEmailFormDialog nameResultsId={nameResults.id} />
+            </SignedIn>
+          }
           sx={{ fontSize: "1.5rem", backgroundColor: "primary.50" }}
         ></CardHeader>
         <CardContent>
@@ -67,7 +79,9 @@ const ResultsCard: React.FC<ResultsCardProps> = ({
       <Box
         sx={{
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
+          alignItems: "center",
           height: "100%",
           width: "100%",
         }}
@@ -75,9 +89,51 @@ const ResultsCard: React.FC<ResultsCardProps> = ({
         <Typography sx={{ margin: "auto" }} variant="body1" component="div">
           Your results will appear here.
         </Typography>
+        <SignedOut>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              flexWrap: "wrap",
+              marginBottom: "1rem",
+            }}
+          >
+            <SignUpOrSignInButtons />
+          </div>
+        </SignedOut>
+        <SignedIn>
+          <SignOutButton>
+            <Button size="small" variant="text">
+              Sign out
+            </Button>
+          </SignOutButton>
+        </SignedIn>
       </Box>
     )}
   </Card>
+);
+
+const SignUpOrSignInButtons: React.FC = (): JSX.Element => (
+  <>
+    <SignUpButton mode="modal">
+      <Button size="small" variant="text">
+        Sign up
+      </Button>
+    </SignUpButton>
+    <Typography variant="body2" display="block" gutterBottom>
+      or
+    </Typography>
+    <SignInButton mode="modal">
+      <Button size="small" variant="text">
+        Sign in
+      </Button>
+    </SignInButton>
+    <Typography variant="body2" display="block" gutterBottom>
+      to save your results
+    </Typography>
+  </>
 );
 
 export default ResultsCard;

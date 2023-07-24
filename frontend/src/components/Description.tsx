@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-react";
 import { Typography } from "@mui/material";
 import { useEffect } from "react";
 
@@ -21,13 +22,21 @@ const AppDescription: React.FC<AppDescriptionProps> = ({
     };
   }, [setFootnote]);
 
+  const { isSignedIn, user } = useUser();
+
   return (
     <>
       <Typography variant="h4" gutterBottom>
         Baby Name Generator
       </Typography>
       <Typography variant="body2" paragraph>
-        Welcome to the Baby Name Generator! Powered by artificial intelligence
+        Welcome
+        {isSignedIn && user?.firstName ? (
+          <span>, {user.firstName},</span>
+        ) : (
+          " "
+        )}{" "}
+        to the Baby Name Generator! Powered by artificial intelligence
         <sup>
           <a href="#1">
             <span>1</span>

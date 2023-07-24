@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/clerk-react";
 import * as React from "react";
 import Container from "@mui/material/Container";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -6,6 +7,11 @@ import Box from "@mui/material/Box";
 
 import AppContent from "./components/AppContent";
 import { SnackbarProvider } from "./hooks/useSnackbar";
+
+if (!import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key");
+}
+const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 const theme = createTheme({
   palette: {
@@ -38,27 +44,29 @@ const theme = createTheme({
 
 const App: React.FC = (): JSX.Element => {
   return (
-    <ThemeProvider theme={theme}>
-      <SnackbarProvider>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            paddingTop: "2rem",
-            height: "100vh",
-            width: "100vw",
-            overflowY: "auto",
-            backgroundColor: "white",
-            color: "black",
-          }}
-        >
-          <Container maxWidth="xl" sx={{ width: "100%" }}>
-            <AppContent />
-          </Container>
-        </Box>
-      </SnackbarProvider>
-    </ThemeProvider>
+    <ClerkProvider publishableKey={clerkPubKey}>
+      <ThemeProvider theme={theme}>
+        <SnackbarProvider>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-start",
+              paddingTop: "2rem",
+              height: "100vh",
+              width: "100vw",
+              overflowY: "auto",
+              backgroundColor: "white",
+              color: "black",
+            }}
+          >
+            <Container maxWidth="xl" sx={{ width: "100%" }}>
+              <AppContent />
+            </Container>
+          </Box>
+        </SnackbarProvider>
+      </ThemeProvider>
+    </ClerkProvider>
   );
 };
 
