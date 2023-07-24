@@ -27,7 +27,15 @@ const ResultsCard: React.FC<ResultsCardProps> = ({
   nameResults,
   isLoading,
 }): JSX.Element => (
-  <Card sx={{ marginY: 4, width: "100%" }} color="primary">
+  <Card
+    sx={{
+      marginY: 4,
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+    }}
+    color="primary"
+  >
     {nameResults ? (
       <>
         <CardHeader
@@ -89,29 +97,39 @@ const ResultsCard: React.FC<ResultsCardProps> = ({
         <Typography sx={{ margin: "auto" }} variant="body1" component="div">
           Your results will appear here.
         </Typography>
-        <SignedOut>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              flexWrap: "wrap",
-              marginBottom: "1rem",
-            }}
-          >
-            <SignUpOrSignInButtons />
-          </div>
-        </SignedOut>
-        <SignedIn>
-          <SignOutButton>
-            <Button size="small" variant="text">
-              Sign out
-            </Button>
-          </SignOutButton>
-        </SignedIn>
       </Box>
     )}
+
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginBottom: "1rem",
+      }}
+    >
+      <SignedOut>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "wrap",
+            marginTop: "auto",
+          }}
+        >
+          <SignUpOrSignInButtons />
+        </div>
+      </SignedOut>
+      <SignedIn>
+        <SignOutButton>
+          <Button size="small" variant="text">
+            Sign out
+          </Button>
+        </SignOutButton>
+      </SignedIn>
+    </Box>
   </Card>
 );
 
