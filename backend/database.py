@@ -13,7 +13,7 @@ async def create_name_results(client, name_results: str) -> dict:
     return result
 
 
-async def get_name_results_by_id(client, id: str) -> NameResults:
+async def get_name_results_by_id(client, id: str) -> dict:
     name_result = await client.name_results_collection.find_one({"_id": ObjectId(id)})
     return name_result_helper(name_result)
 

@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from typing import List
 
 
-class ParentData(BaseModel):
+class NamePreferencesSchema(BaseModel):
     parent1_name: str = Field(..., description="Name of parent 1")
     parent2_name: str = Field(..., description="Name of parent 2")
     values: List[str] = Field(

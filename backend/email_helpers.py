@@ -30,7 +30,7 @@ conf = ConnectionConfig(
 )
 
 
-class EmailNameResultsRequest(BaseModel):
+class EmailNameResultsSchema(BaseModel):
     email_address: str = Field(..., description="List of emails to send to")
     results_id: str = Field(..., description="ID of results to send")
 
@@ -41,7 +41,7 @@ def load_template(template_name, **kwargs):
     return template.render(**kwargs)
 
 
-async def send_email(client, results_request: EmailNameResultsRequest, retries=3):
+async def send_email(client, results_request: EmailNameResultsSchema, retries=3):
     try:
         name_results = await get_name_results_by_id(client, results_request.results_id)
     except (

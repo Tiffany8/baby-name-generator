@@ -1,7 +1,7 @@
-from models import ParentData
+from models import NamePreferencesSchema
 
 
-def create_prompt(data: ParentData):
+def create_prompt(data: NamePreferencesSchema):
     values_str = ", ".join(data.values)
     cultural_backgrounds_str = ", ".join(data.cultural_backgrounds)
     family_names_str = (

@@ -1,6 +1,5 @@
 import logging
 from dotenv import load_dotenv
-from starlette.responses import JSONResponse
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request, status
 from fastapi.security import APIKeyHeader
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,9 +12,9 @@ import motor.motor_asyncio
 import os
 import openai
 
-from email_helpers import send_email, EmailNameResultsRequest
+from email_helpers import send_email, EmailNameResultsSchema
 from database import create_name_results
-from models import ParentData
+from models import NamePreferencesSchema
 from openai_helpers import create_prompt
 
 load_dotenv()
@@ -33,8 +32,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
-
 
 async def check_api_key(request: Request):
     if request.headers.get("x-api-key") != os.getenv("API_KEY"):
@@ -44,7 +41,9 @@ async def check_api_key(request: Request):
 
 
 @app.post("/names")
-async def generate_names(data: ParentData, api_key: str = Depends(check_api_key)):
+async def generate_names(
+    data: NamePreferencesSchema, api_key: str = Depends(check_api_key)
+):
     content = create_prompt(data)
     try:
         response = await openai.ChatCompletion.acreate(
@@ -52,7 +51,6 @@ async def generate_names(data: ParentData, api_key: str = Depends(check_api_key)
             messages=[{"role": "user", "content": content}],
             temperature=1,
         )
-        print(response["choices"][0]["message"]["content"])
         results = await create_name_results(
             client=app.database,
             name_results=response["choices"][0]["message"]["content"],
@@ -81,7 +79,7 @@ async def generate_names(data: ParentData, api_key: str = Depends(check_api_key)
 @app.post("/email-results")
 async def email_results(
     background_task: BackgroundTasks,
-    email_results_request: EmailNameResultsRequest,
+    email_results_request: EmailNameResultsSchema,
     api_key: str = Depends(check_api_key),
 ):
     background_task.add_task(
