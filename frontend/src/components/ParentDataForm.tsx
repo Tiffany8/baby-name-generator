@@ -33,6 +33,15 @@ const ParentDataForm: React.FC<ParentDataFormProps> = ({
   setIsLoading,
   setNameResults,
 }): JSX.Element => {
+  const isProduction = import.meta.env.VITE_NODE_ENV === "production";
+  const handleButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ): void => {
+    if (isProduction) {
+      event.preventDefault();
+      alert("This feature is currently disabled.");
+    }
+  };
   const showSnackbar = useSnackbar();
   const formik = useFormik({
     initialValues: {
@@ -311,7 +320,8 @@ const ParentDataForm: React.FC<ParentDataFormProps> = ({
           variant="outlined"
           color="primary"
           type="submit"
-          disabled={isLoading}
+          disabled={isProduction || isLoading}
+          onClick={handleButtonClick}
         >
           Generate
         </Button>

@@ -21,6 +21,10 @@ export interface SendEmailFormDialogProps {
 const SendEmailFormDialog: React.FC<SendEmailFormDialogProps> = ({
   nameResultsId,
 }): JSX.Element => {
+  const isProduction = import.meta.env.VITE_NODE_ENV === "production";
+  const [emailTextPlaceholder, emailTextFieldDisabled] = isProduction
+    ? ["Email currently disabled", true]
+    : ["Email", false];
   const [isOpen, setIsOpen] = useState(false);
   const [emailAddress, setEmailAddress] = useState("");
   const handleClose = () => setIsOpen(false);
@@ -72,10 +76,11 @@ const SendEmailFormDialog: React.FC<SendEmailFormDialogProps> = ({
             fullWidth
             size="small"
             id="email"
-            placeholder="Email"
+            placeholder={emailTextPlaceholder}
             type="text"
             variant="standard"
             autoFocus
+            disabled={emailTextFieldDisabled}
             onChange={(e) => setEmailAddress(e.target.value)}
           />
         </DialogContent>
