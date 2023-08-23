@@ -320,7 +320,7 @@ const ParentDataForm: React.FC<ParentDataFormProps> = ({
           variant="outlined"
           color="primary"
           type="submit"
-          disabled={isProduction || isLoading}
+          disabled={isLoading}
           onClick={handleButtonClick}
         >
           Generate
